@@ -119,6 +119,39 @@ def re_matcher(rexpr, fcreate, use_search=False):
     return _matcher
 
 
+def re_findaller(rexpr, fcreate):
+    """
+    Parameters
+    ----------
+    rexpr : str
+        A regexp pattern to match.
+
+    fcreate : Function (match, path, range) -> result.
+
+    """
+    rexpr = re.compile(rexpr)
+
+    def _matcher(path, source, begin_line=0, end_line=None, 
+            begin_character=0, end_character=None):
+        source = source.split("\n") if isinstance(source, str) else source
+        results = []
+        end_line = min(end_line, len(source)) if end_line else len(source)
+        for line in range(begin_line, end_line):
+            content = source[line]
+            content = content[begin_character:end_character]
+            matchs = rexpr.finditer(content)
+            for match in matchs:
+                start, end = match.span()
+                start_pos = Position(line, start)
+                end_pos = Position(line, end)
+                item = fcreate(match, path,
+                               Range(start_pos, end_pos))
+                if item:
+                    results.append(item)
+        return results
+    return _matcher
+
+
 def re_multi_line_matcher(rexpr, fcreate):
     """ Matches a pattern spanning multiple lines
 

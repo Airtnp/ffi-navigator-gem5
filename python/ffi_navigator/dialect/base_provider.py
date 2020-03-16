@@ -49,7 +49,7 @@ class BaseProvider(object):
         """This function will be called for each file
         Extract patterns in the file as specified in pattern.py and return them.
         """
-        cpp_ext = [".cpp", ".cc", ".h"]
+        cpp_ext = [".cpp", ".cc", ".h", ".hh"]
         for ext in cpp_ext:
             if path.endswith(ext):
                 return self._cc_extract(path, source, begin, end)

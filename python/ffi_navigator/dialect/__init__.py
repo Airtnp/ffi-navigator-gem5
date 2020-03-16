@@ -5,6 +5,7 @@ from .dgl import DGLProvider
 from .mxnet import MXNetProvider
 from .torch import TorchProvider
 from .taichi import TaichiProvider
+from .gem5 import GEM5Provider
 
 
 def autodetect_dialects(root_path, resolver, logger):
@@ -36,4 +37,7 @@ def autodetect_dialects(root_path, resolver, logger):
         dialects.append(DGLProvider(resolver, logger))
     elif os.path.exists(os.path.join(root_path, "python", "taichi")):
         dialects.append(TaichiProvider(resolver, logger))
+    elif os.path.exists(os.path.join(root_path, "include", "gem5")):
+        # just a marker here
+        dialects.append(GEM5Provider(resolver, logger))
     return dialects
