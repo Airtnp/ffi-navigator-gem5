@@ -18,13 +18,20 @@ class GEM5Provider(BaseProvider):
     def __init__(self, resolver, logger):
         super().__init__(resolver, logger, "gem5")
         
+        # TODO: fix all range in the regexr capture
         self.py_cc_ident = pattern.re_findaller(
             r"(?P<key>[A-Za-z0-9_]+)",
             lambda match, path, rg:
             pattern.Ref(key=match.group("key"), path=path, range=rg)
         )
         self.py_sim_object = pattern.re_matcher(
-            r"\s*class\s*(?P<key>[A-Za-z0-9_]+)\((?P<base>[A-Za-z0-9_]+)\)",
+            r"\s*class\s*(?P<key>[A-Za-z0-9_]+)\((?P<base>[A-Za-z0-9_,\s]+)\)",
+            lambda match, path, rg:
+            pattern.Def(key=match.group("key"), path=path, range=rg),
+            use_search=True)
+
+        self.py_scons_def_func = pattern.re_matcher(
+            r"\s*def\s*(?P<key>[A-Za-z][A-Za-z0-9_]+)\(",
             lambda match, path, rg:
             pattern.Def(key=match.group("key"), path=path, range=rg),
             use_search=True)
@@ -79,6 +86,7 @@ class GEM5Provider(BaseProvider):
         results += self.py_init_sim_object(path, source, begin, end)
         results += self.py_inherit_sim_object(path, source, begin, end)
         results += self.py_dot_sim_object(path, source, begin, end)
+        results += self.py_scons_def_func(path, source, begin, end)
         return results
 
     def extract_symbol(self, path, source, pos):

@@ -53,7 +53,7 @@ class BaseProvider(object):
         for ext in cpp_ext:
             if path.endswith(ext):
                 return self._cc_extract(path, source, begin, end)
-        if path.endswith(".py"):
+        if path.endswith(".py") or path.endswith('SConscript') or path.endswith('SConstruct'):
             return self._py_extract(path, source, begin, end)
         return []
 

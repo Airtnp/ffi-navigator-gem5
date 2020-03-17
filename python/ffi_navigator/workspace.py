@@ -69,7 +69,7 @@ class Workspace:
         for path in sorted(glob.glob(join_path(dirname, "**/*.py"), recursive=True)):
             self.init_pass(path, open(path).readlines())
         # normal scans
-        suffixes = ['.py', '.h', '.hh', '.cc', '.cpp']
+        suffixes = ['.py', '.h', '.hh', '.cc', '.cpp', 'SConscript', 'SConstruct']
         for suffix in suffixes:
             pattern_str = "**/*" + suffix
             for path in sorted(glob.glob(join_path(dirname, pattern_str), recursive=True)):
